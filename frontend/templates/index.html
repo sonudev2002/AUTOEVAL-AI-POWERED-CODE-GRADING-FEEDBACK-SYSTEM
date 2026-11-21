@@ -1,251 +1,81 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login / Signup</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
-    />
-    <style>
-      /* (Your CSS unchanged) */
-      body {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        font-family: Arial, sans-serif;
-        background-image: url("{{ url_for('static', filename='images/login_bg_medium.jpg') }}");
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: cover;
-        background-attachment: fixed;
-      }
-      .container {
-        width: 90%;
-        max-width: 1000px;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 12px rgba(54, 236, 184, 0.1);
-      }
-      .tabs {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-      .tab {
-        flex: 1 1 50%;
-        text-align: center;
-        padding: 10px 0;
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        font-weight: bold;
-        transition: 0.3s;
-      }
-      .tab.active {
-        border-color: #007bff;
-        color: #007bff;
-      }
-      form {
-        display: none;
-      }
-      form.visible {
-        display: block;
-      }
-      label {
-        display: block;
-        margin-top: 10px;
-        font-size: 0.95rem;
-      }
-      input,
-      select {
-        width: 100%;
-        padding: 10px;
-        margin-top: 4px;
-        margin-bottom: 12px;
-        font-size: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-sizing: border-box;
-      }
-      button {
-        padding: 10px;
-        background: #2173ccff;
-        color: white;
-        border: none;
-        width: 100%;
-        font-size: 1rem;
-        cursor: pointer;
-        border-radius: 6px;
-        transition: background 0.3s;
-      }
-      button:hover {
-        background: #0056b3;
-      }
-      .form-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      .form-column {
-        flex: 1;
-        min-width: 240px;
-      }
-      .form-actions {
-        margin-top: 20px;
-      }
-      .form-actions button,
-      #otp-section input {
-        width: 100%;
-        margin-top: 10px;
-      }
-      #otp-section {
-        margin-top: 15px;
-      }
-      @media (max-width: 1024px) {
-        .container {
-          width: 70%;
-        }
-      }
-      @media (max-width: 768px) {
-        body {
-          padding: 10px;
-          align-items: flex-start;
-        }
-        .container {
-          width: 90%;
-        }
-        .form-grid {
-          flex-direction: column;
-        }
-        .tab {
-          flex: 1 1 100%;
-          font-size: 1rem;
-        }
-        input,
-        select,
-        button {
-          font-size: 1rem;
-        }
-      }
-      @media (max-width: 480px) {
-        label {
-          font-size: 0.9rem;
-        }
-        input,
-        select {
-          font-size: 0.95rem;
-          padding: 8px;
-        }
-        button {
-          padding: 8px;
-          font-size: 0.95rem;
-        }
-      }
-      .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: transparent;
-        z-index: -1;
-      }
-    </style>
-  </head>
-  <body style="margin: 0; display: flex; flex-direction: column; min-height: 100vh">
-    <!-- 🌐 Public Header (Index Page) -->
-<header style="
-  background: linear-gradient(90deg, #ae75d7f6, #36dbc5ee);
-  color: #ffffff;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-">
-  <!-- 🔹 Left: Logo + Brand -->
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="AutoEval Logo"
-         style="height: 60px; width: 50px; border-radius: 50%; object-fit: cover;">
-    <div style="display: flex; flex-direction: column; line-height: 1.2;">
-      <span style="font-size: 1.5rem; font-weight: 600;">AutoEval</span>
-      <span style="font-size: 0.95rem; color: #e8dbdbff;">AI Code Grading</span>
-    </div>
-  </div>
-
-  <!-- 🔹 Right: Nav Links -->
-  <nav style="
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-  ">
-   
-    <a href="/about" style="color: #fff; text-decoration: none; font-weight: 500; transition: 0.2s;">About</a>
-    <a href="/contact" style="color: #fff; text-decoration: none; font-weight: 500; transition: 0.2s;">Contact</a>
-    <a href="/privacy" style="color: #fff; text-decoration: none; font-weight: 500; transition: 0.2s;">Privacy</a>
-  </nav>
-</header>
-
-    <div class="overlay"></div>
-    <div style="flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 0;">
-      <div class="container">
-        <div class="tabs">
-          <div class="tab active" onclick="showTab('login')">Login</div>
-          <div class="tab" onclick="showTab('signup')">Signup</div>
-          <div class="tab" onclick="showTab('forget-password')">Forget Password</div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · AutoEval</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+<body>
+  <header class="mast">
+    <a class="brand" href="/" aria-label="AutoEval home"><span class="mark" aria-hidden="true">&lt;/&gt;</span>AutoEval</a>
+    <nav aria-label="Main navigation"><a href="/about">About</a><a href="/contact">Contact</a></nav>
+  </header>
+  <main class="workspace">
+    <aside class="intro" aria-label="About AutoEval">
+      <p class="kicker">AI CODE GRADING</p>
+      <h2>From code<br>to <em>clarity.</em></h2>
+      <p class="summary">Submit your code, review your results, and learn from feedback on each assignment.</p>
+      <figure class="sample">
+        <figcaption>Example submission <span>Python</span></figcaption>
+        <pre><code><b>def</b> square(n):
+    <b>return</b> n * n</code></pre>
+        <div class="result"><span aria-hidden="true">✓</span> square(4) returned 16</div>
+      </figure>
+    </aside>
+    <section class="access" aria-label="Account access">
+      <form id="login-form" class="visible">
+        <h1 tabindex="-1">Welcome back</h1>
+        <p class="hint">Sign in to your AutoEval workspace.</p>
+        <label for="login-email">Email address</label>
+        <input id="login-email" name="email" type="email" autocomplete="username" placeholder="you@example.com" required>
+        <label for="login-password">Password</label>
+        <div class="password-field">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+          <button class="text-action" type="button" id="toggle-password" aria-controls="login-password" aria-label="Show password">Show</button>
         </div>
-
-        <!-- Login Form -->
-        <form id="login-form" class="visible">
-          <label for="login-email">Email:</label>
-          <input id="login-email" type="email" name="email" required />
-          <label for="login-password">Password:</label>
-          <input id="login-password" type="password" name="password" required />
-          <button type="submit">Login</button>
-        </form>
-
+        <button class="text-action recover" type="button" onclick="showTab('forget-password')">Forgot password?</button>
+        <button class="primary" type="submit">Sign in <span aria-hidden="true">→</span></button>
+        <p class="switch">New to AutoEval? <button class="text-action" type="button" onclick="showTab('signup')">Create an account</button></p>
+      </form>
         <!-- Signup Form -->
         <form id="signup-form" enctype="multipart/form-data">
+          <button class="text-action back" type="button" onclick="showTab('login')">← Back to sign in</button>
+          <h1 tabindex="-1">Create an account</h1>
+          <p class="hint">Enter your details to register for AutoEval.</p>
           <div class="form-grid">
             <div class="form-column">
-              <label>First Name:</label>
-              <input name="first_name" required />
-              <label>Middle Name:</label>
-              <input name="middle_name" />
-              <label>Last Name:</label>
-              <input name="last_name" required />
-              <label>Email:</label>
-              <input name="email" type="email" required />
-              <label>Mobile:</label>
-              <input name="mobile" type="text" maxlength="10" required />
-              <label>Password:</label>
-              <input name="password" type="password" required />
-              <label>Confirm Password:</label>
+              <label for="register-first_name">First Name</label>
+              <input id="register-first_name" name="first_name" required />
+              <label for="register-middle_name">Middle Name</label>
+              <input id="register-middle_name" name="middle_name" />
+              <label for="register-last_name">Last Name</label>
+              <input id="register-last_name" name="last_name" required />
+              <label for="register-email">Email</label>
+              <input id="register-email" name="email" type="email" required />
+              <label for="register-mobile">Mobile</label>
+              <input id="register-mobile" name="mobile" type="text" maxlength="10" required />
+              <label for="register-password">Password</label>
+              <input id="register-password" name="password" type="password" required />
+              <label for="confirm_password">Confirm Password</label>
               <input name="confirm_password" type="password" id="confirm_password" required />
             </div>
 
             <div class="form-column">
-              <label>Profile Picture:</label>
-              <input type="file" name="profile_picture" accept="image/*" />
-              <label>Country:</label>
-              <input name="country" required />
-              <label>State:</label>
-              <input name="state" />
-              <label>District:</label>
-              <input name="district" />
-              <label>Local Address:</label>
-              <input name="local_address" />
-              <label>Pincode:</label>
-              <input name="pincode" />
-              <label>Role:</label>
-              <select name="role">
+              <label for="register-profile_picture">Profile Picture</label>
+              <input id="register-profile_picture" type="file" name="profile_picture" accept="image/*" />
+              <label for="register-country">Country</label>
+              <input id="register-country" name="country" required />
+              <label for="register-state">State</label>
+              <input id="register-state" name="state" />
+              <label for="register-district">District</label>
+              <input id="register-district" name="district" />
+              <label for="register-local_address">Local Address</label>
+              <input id="register-local_address" name="local_address" />
+              <label for="register-pincode">Pincode</label>
+              <input id="register-pincode" name="pincode" />
+              <label for="register-role">Role</label>
+              <select id="register-role" name="role">
                 <option value="student">Student</option>
                 <option value="instructor">Instructor</option>
                 <option value="admin">Admin</option>
@@ -257,7 +87,7 @@
             <button type="button" id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
 
             <div id="otp-section" style="display: none">
-              <label>Enter OTP:</label>
+              <label for="otp">Enter OTP</label>
               <input type="text" id="otp" />
               <button type="button" id="verify-otp-btn" onclick="verifyOTP()">Verify OTP</button>
               <button type="button" id="resend-otp-btn" onclick="sendOTP()">Resend OTP</button>
@@ -270,10 +100,13 @@
 
         <!-- Change Password Form -->
         <form id="forget-password-form">
-          <label>Email:</label>
+          <button class="text-action back" type="button" onclick="showTab('login')">← Back to sign in</button>
+          <h1 tabindex="-1">Reset password</h1>
+          <p class="hint">Choose your role and request a verification code.</p>
+          <label for="forget_email">Email</label>
           <input type="email" name="email" id="forget_email" required />
 
-          <label>Role:</label>
+          <label for="forget_role">Role</label>
           <select name="role" id="forget_role" required>
             <option value="student">Student</option>
             <option value="instructor">Instructor</option>
@@ -284,7 +117,7 @@
             <button type="button" id="fp-send-btn" onclick="sendForgetOTP()">Send OTP</button>
 
             <div id="fp-otp-section" style="display: none">
-              <label>Enter OTP:</label>
+              <label for="fp-otp">Enter OTP</label>
               <input type="text" id="fp-otp" />
               <button type="button" id="fp-verify-btn" onclick="verifyForgetOTP()">Verify OTP</button>
               <button type="button" id="fp-resend-btn" onclick="sendForgetOTP()">Resend OTP</button>
@@ -292,17 +125,16 @@
             </div>
 
             <div id="fp-password-section" style="display: none">
-              <label>New Password:</label>
+              <label for="fp-new-pass">New Password</label>
               <input type="password" id="fp-new-pass" name="password" />
-              <label>Confirm Password:</label>
+              <label for="fp-confirm-pass">Confirm Password</label>
               <input type="password" id="fp-confirm-pass" name="confirm_password" />
               <button type="submit" id="fp-change-btn">Change Password</button>
             </div>
           </div>
         </form>
-      </div>
-    </div>
-
+    </section>
+  </main>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -332,15 +164,20 @@
 
       /* -------------------- 1. Tab switching -------------------- */
       function showTab(tab) {
-        document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
-        const tabSelector = `.tab[onclick="showTab('${tab}')"]`;
-        const theTab = document.querySelector(tabSelector);
-        if (theTab) theTab.classList.add("active");
-
-        document.querySelectorAll("form").forEach((f) => f.classList.remove("visible"));
-        const form = document.getElementById(`${tab}-form`);
-        if (form) form.classList.add("visible");
+        const target = document.getElementById(`${tab}-form`);
+        document.querySelectorAll(".access form").forEach(form => {
+          form.classList.toggle("visible", form === target);
+        });
+        target.querySelector("h1").focus();
       }
+
+      document.getElementById("toggle-password").addEventListener("click", event => {
+        const password = document.getElementById("login-password");
+        const reveal = password.type === "password";
+        password.type = reveal ? "text" : "password";
+        event.currentTarget.textContent = reveal ? "Hide" : "Show";
+        event.currentTarget.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
+      });
 
       /* -------------------- 2. Grab elements -------------------- */
       const loginForm = document.getElementById("login-form");
